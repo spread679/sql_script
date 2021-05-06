@@ -106,8 +106,8 @@ BEGIN
 	-- control all the characters
 	WHILE @i <= @length
 	BEGIN
-		DECLARE @beforeChar CHAR(1)
-		DECLARE @nextChar CHAR(1)
+		DECLARE @beforeChar CHAR(1) = ''
+		DECLARE @nextChar CHAR(1) = ''
 
 		SET @char = SUBSTRING(@string, @i, 1)
 		IF (@i - 1) > 0 SET @beforeChar = SUBSTRING(@string, @i - 1, 1)
@@ -129,7 +129,7 @@ BEGIN
 		END
 
 		-- exit control from delimiter
-		IF (CHARINDEX('1', @innerDelimiter) = 1 AND CHARINDEX(@qualifier, @char) = 1 AND CHARINDEX(@delimiter, @nextChar) = 1)
+		IF (CHARINDEX('1', @innerDelimiter) = 1 AND CHARINDEX(@qualifier, @char) = 1 AND (CHARINDEX(@delimiter, @nextChar) = 1 OR @nextChar = ''))
 		BEGIN
 			SET @innerDelimiter = '0'
 			CONTINUE
