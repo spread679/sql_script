@@ -83,7 +83,7 @@ GO
 --	@qualifier - the qualifier
 -- RETURNS: the input string with the delimiter changed
 --
-CREATE FUNCTION a3f_ReplaceSplitChar
+CREATE OR ALTER FUNCTION a3f_ReplaceSplitChar
 	(@string AS VARCHAR(MAX),
 	 @delimiter AS VARCHAR(10),
 	 @qualifier AS VARCHAR(10))
@@ -123,11 +123,17 @@ BEGIN
 
 		-- entry control in string delimiter
 		IF (CHARINDEX('0', @innerDelimiter) = 1 AND CHARINDEX(@qualifier, @char) = 1 AND CHARINDEX(@delimiter, @beforeChar) = 1)
+		BEGIN
 			SET @innerDelimiter = '1'
+			CONTINUE
+		END
 
 		-- exit control from delimiter
 		IF (CHARINDEX('1', @innerDelimiter) = 1 AND CHARINDEX(@qualifier, @char) = 1 AND CHARINDEX(@delimiter, @nextChar) = 1)
+		BEGIN
 			SET @innerDelimiter = '0'
+			CONTINUE
+		END
 
 		SET @output = CONCAT(@output, @char)
 	END
@@ -157,7 +163,7 @@ RETURNS VARCHAR(MAX)
 BEGIN
 	DECLARE @mediator VARCHAR(MAX)
 	DECLARE @output VARCHAR(MAX)
-	DECLARE @newSplit CHAR(1) = '¦'
+	DECLARE @newSplit CHAR(1) = 'Â¦'
 
 	-- control the input
 	IF (ISNULL(@string, '') = '' OR ISNULL(@delimiter, '') = '' OR ISNULL(@qualifier, '') = '' OR ISNULL(@position, 0) = 0)
