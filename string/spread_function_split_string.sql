@@ -1,4 +1,9 @@
-USE [your db]
+USE [serviceDBCenter]
+GO
+/****** Object:  UserDefinedFunction [dbo].[function_split_string]    Script Date: 08/10/2021 10:18:56 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
 
 /**
@@ -15,10 +20,10 @@ GO
  *
  */
 
-CREATE OR ALTER FUNCTION function_split_string (
+ALTER   FUNCTION [dbo].[function_split_string] (
 	@string_to_split varchar(max),
 	@delimiter char(1),
-  @qualifier char(1),
+	@qualifier char(1),
 	@position int
 )
 RETURNS varchar(8000)
@@ -55,13 +60,13 @@ BEGIN
 			SET @current_index_field = @current_index_field + 1
 
 		-- change @in_qualifier status
-		IF @current_char = @qualifier AND @previous_char = @delimiter AND @in_qualified = 0
+		IF @current_char = @qualifier AND @previous_char IN (@delimiter, '') AND @in_qualified = 0
 		BEGIN
 			SET @in_qualified = 1
 			CONTINUE
 		END
 
-		IF @current_char = @qualifier AND (@next_char = @delimiter OR @next_char = '') AND @in_qualified = 1
+		IF @current_char = @qualifier AND @next_char IN (@delimiter, '') AND @in_qualified = 1
 		BEGIN
 			SET @in_qualified = 0
 			CONTINUE
@@ -80,4 +85,3 @@ BEGIN
 
 	RETURN @result_field
 END
-GO
